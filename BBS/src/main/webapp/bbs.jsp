@@ -33,7 +33,8 @@
 		}
 		int pageNumber =1; //기본은 1페이지를 할당
 		//만약 파라미터로 넘어온 오브젝트 타입 'pageNumber'가 존재한다면
-		//'int'타입으로 캐스팀ㅇ을 해주고 그 값을 'pageNumber'변수에 저장한다.
+		//'int'타입으로 캐스팅을 해주고 그 값을 'pageNumber'변수에 저장한다.
+		
 		if(request.getParameter("pageNumber")!=null){
 			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
 		}
@@ -127,30 +128,68 @@
 									.replaceAll("<", "&lt;").replaceAll(">","&gt;").replaceAll("\n","<br>")  %></a></td>
 						<td><%= list.get(i).getUserID() %></td>
 						<td><%= list.get(i).getBbsDate().substring(0,11) + list.get(i).getBbsDate().substring(11,13) + "시"
-						+list.get(i).getBbsDate().substring(1,16) +"분"%></td>
+						+list.get(i).getBbsDate().substring(10,16) +"분"%></td>
 					</tr>
 					<%
 						}
 					%>
-				</tbody>	
-			</table>
+				
 			
-			<!--  페이징 처리 영역 -->
-			<%
-				if(pageNumber!=1){
-			%>
-				<a href="bbs.jsp?pageNumber=<%=pageNumber -1 %>"
-					class="btn btn-success btn-arraw-left">이전</a>
-			<%
-				}if(bbsDAO.nextPage(pageNumber +1)){
-			%>
-				<a href="bbs.jsp?pageNumber=<%=pageNumber +1 %>"
-				class ="btn btn-success btn-arraw-left">다음</a>
-			<%
-				}
-			%>
-			<!--  글쓰기 버튼 생성 -->
-			<a href="write.jsp" class="btn btn-primary pull-right">글쓰기</a>
+					<tr>
+					
+						<td colspan="5">
+							<!--  글쓰기 버튼 생성 -->
+							<a href="write.jsp" class="btn btn-primary pull-right" type="submit">글쓰기</a>
+							<!--  페이징 처리 영역 -->
+							<ul class="pagination" style="margin: 0 auto;">
+							<% 
+								int startPage = (pageNumber/10) * 10 +1;
+								if(pageNumber%10 ==0) startPage-=10;
+								int targetPage = new BbsDAO().targetPage(pageNumber);
+								if (startPage !=1){
+							%>
+						        <li><a href="bbs.jsp?pageNumber=<%=startPage - 1%>"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
+						    <%
+						 	   } else{
+						 	%>	   
+						 	   <li><span class="glyphicon glyphicon-chevron-left" style="color: gray;"></span></li>
+						    <% 
+						    	} 
+								for (int i = startPage; i < pageNumber;  i++){ 
+						    %>
+						    	<li><a href="bbs.jsp?pageNumber=<%= i %>"><%= i %></a></li>
+						        
+						    <%
+						   		} 
+						   
+						    %>
+						    	<li class="active"><a href="bbs.jsp?pageNumber=<%= pageNumber %>"><%= pageNumber %></a></li>
+							<%
+								// 어떤 페이지까지 이동할 수 있는지
+								for(int i = pageNumber +1; i<=targetPage + pageNumber; i++){
+									if(i <startPage +10){
+										
+									
+							%>
+								<li><a href="bbs.jsp?pageNumber=<%= i %>"><%= i %></a></li>
+							<%
+									}
+								}
+							if (targetPage + pageNumber > startPage +9 ){							
+							%>
+								<li><a href="bbs.jsp?pageNumber=<%= startPage +10 %>"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
+							<%
+								}else{
+							%>
+								<li><span class="glyphicon glyphicon-chevron-right" style="color: gray;"></span></li>
+							<%
+								}
+							%>
+						 	</ul>
+						</td>
+					</tr>
+				</tbody>	
+			</table>		
 		</div>
 	</div>
 	<!-- 부트스트랩 참조 영역 -->
