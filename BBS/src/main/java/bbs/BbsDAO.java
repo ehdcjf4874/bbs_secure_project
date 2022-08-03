@@ -76,12 +76,14 @@ public class BbsDAO {
 	//게시글 리스트 메소드
 	public ArrayList<Bbs> getList(int pageNumber){
 
-		String sql="select * from bbs where bbsID < ? and bbsAvailable = 1 order by bbsID desc limit 10";
+		String sql="select * from bbs where bbsID > (select max(bbsID) from bbs) - ? and bbsID <= (select max(bbsID) from bbs) -? and bbsAvailable = 1 order by bbsID desc";
 		
 		ArrayList<Bbs> list = new ArrayList<Bbs>();
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1,  getNext() - (pageNumber -1) * 10);
+			
+			pstmt.setInt(1, (pageNumber) * 10);
+			pstmt.setInt(2, (pageNumber-1) * 10);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				Bbs bbs = new Bbs();
@@ -98,21 +100,20 @@ public class BbsDAO {
 		}
 		return list;
 	}
-	
-	//페이징 처리 메소드
-	public boolean nextPage(int pageNumber) {
-		String sql="select * from bbs where bbsID < ? and bbsAvailable = 1";
+	// 페이징 처리 메소드
+	public int targetPage(int pageNumber) {
+		String sql="select count(*) from bbs where bbsID > ? and bbsAvailable=1";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1,  getNext() - (pageNumber -1) * 10);
+			pstmt.setInt(1,  (pageNumber-1) * 10);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
-				return true;
+				return rs.getInt(1)/10;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 				
 	}
 	//하나의 게시글을 보는 메소드
