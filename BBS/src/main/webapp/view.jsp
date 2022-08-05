@@ -38,7 +38,7 @@
 			script.println("location.href='bbs.jsp'");
 			script.println("</script>");	
 		}
-		// 유효한 글이람녀 구체적인 정보를 'bbs'라는 인스턴스에 담는다.
+		// 유효한 글이라면 구체적인 정보를 'bbs'라는 인스턴스에 담는다.
 		Bbs bbs = new BbsDAO().getBbs(bbsID);
 	
 	%>
@@ -115,6 +115,7 @@
 					</tr>
 				</thead>
 				<tbody>
+					<!-- XSS 대응방안-->
 					<tr>
 						<td style="width: 20%;">글제목</td>
 						<td colspan="2"><%= bbs.getBbsTitle().replaceAll(" ", "&nbsp;")
@@ -131,7 +132,7 @@
 					</tr>
 					<tr>
 						<td>내용</td>
-						<td colspan="2" style="height: 200px; text-align:left;"><%= bbs.getBbsContent().replaceAll(" ", "&nbsp;")
+							<td colspan="2" style="height: 200px; text-align:left;"><%= bbs.getBbsContent().replaceAll(" ", "&nbsp;")
 								.replaceAll("<", "&lt;").replaceAll(">","&gt;").replaceAll("\n","<br>")  %></td>
 					</tr>
 				</tbody>	
