@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserDAO {
 	
@@ -26,9 +28,42 @@ public class UserDAO {
 			e.printStackTrace();
 		}
 	}
-//로그인 영역
+	
+	//id와 password의 최대 길이제한을 8character와 16character로 제한한다.
+	private final static int MAX_USER_ID_LENGTH=8;
+	private final static int MAX_PASSWORD_LENGTH=16;
+	
+	
+	
+	//select, delete, update, insert 등 기존 명령어와 알파벳, 숫자를 제외한 다른 문자들
+	//인젝션에 사용되는 특수문자 포함)을 검출하는 정규식을 설정한다.
+	private final static String UNSECURED_CHAR_REGULAR_EXPRESSION =
+			"[^\\p{Alnum}]|select|delete|update|insert|create|alter|drop";
+	
+	private Pattern unsecuredCharPattern;
+	
+	// 정규식을 초기화 한다.
+	public void initialize()
+	{
+		unsecuredCharPattern =	Pattern.compile(UNSECURED_CHAR_REGULAR_EXPRESSION ,Pattern.CASE_INSENSITIVE);
+	}
+	
+	//입력값을 정규식을 이용해 필터링 한 후 의심되는 부분을 없앤다.
+	//substring하는 부분에서 오류
+	private String makeSecureString(final String str, int maxLength)
+	{
+		String secureStr = str.substring(0, maxLength);
+		
+		Matcher matcher = unsecuredCharPattern.matcher(secureStr);
+		
+		return matcher.replaceAll("");
+				}			
+	//로그인 영역
 	public int login(String userID, String userPassword) {
-		String sql ="select userPassword from user where userID =?";
+		
+		String sql;
+		//아이디와 패스워드 최대길이 제한
+			sql ="select"+makeSecureString(userPassword,MAX_PASSWORD_LENGTH)+"from user where"+makeSecureString(userID,MAX_USER_ID_LENGTH)+"=?";
 		try {
 			pstmt=conn.prepareStatement(sql); //sql 쿼리문을 대기 시킨다.
 			pstmt.setString(1, userID); // 첫번째 '?'에 매개변수로 받아온 'userId'를 대입
