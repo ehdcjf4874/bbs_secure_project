@@ -37,7 +37,23 @@
 			script.println("alert('입력이 안 된 사항이 있습니다')");
 			script.println("history.back()");
 			script.println("</script>");
-		} else{
+		}
+		else if(user.getUserID().length()>=8){
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("alert('아이디가 8자 이하여야 합니다.')");
+			script.println("history.back()");
+			script.println("</script>");
+		}
+		else if(user.getUserPassword().length()>=16){
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("alert(' 패스워드가 16자 이하여야 합니다.')");
+			script.println("history.back()");
+			script.println("</script>");
+		}
+		
+		else{
 			UserDAO userDAO =new UserDAO();
 			int result = userDAO.join(user);
 			if(result==-1){
