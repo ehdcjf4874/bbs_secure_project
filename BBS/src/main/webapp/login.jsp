@@ -55,15 +55,15 @@
 		<div class="col-lg-4">
 			<!-- 점보트론은 특정 컨텐츠, 정보를 두드러지게 하기 위한 큰 박스 -->
 			<div class="jumbotron" style="padding-top: 20px;">
-				<form method="post" action="loginAction.jsp">
+				<form method="post"  onsubmit="return validateForm()" action="loginAction.jsp">
 					<h3 style="text-align: center;">로그인 화면</h3>
 					<div class="form-group">
 						<input type="text" class="form-control" placeholder="아이디" 
-								name="userID" maxlength="20">
+								id="userID" name="userID" maxlength="20">
 					</div>
 					<div class="form-group">
 						<input type="password" class="form-control" placeholder="비밀번호" 
-								name="userPassword" maxlength="20">
+								id="userPassword" name="userPassword" maxlength="20">
 					</div>			
  					<input type="submit" class="btn btn-primary form-control" value="로그인">
 				</form>
@@ -71,6 +71,36 @@
 		</div>
 		<div class="col-lg-4"></div>
 	</div>
+	<script> 
+		function validateForm(){
+			//입력값을 가져옵니다.
+			var userID = document.getElementById('userID').value;
+			var userPassword = document.getElementById('userPassword').value;
+			console.log(userID);
+			//간단한 입력값 유효성 검사 예시
+			if (userID === ''){
+				alert('아이디를 입력하세요');
+				return false;
+			}
+			if (userPassword ===''){
+				alert('비밀번호를 입력하세요');
+				return false;
+			}
+			// 클라이언트 입력값 검증을 통해 차단
+			else if (/[;#]/.test(userID)){
+				alert('해킹하지 마세요');
+				return false;
+			}
+			
+			
+			else if (userPassword ==="' or '1'='1"){
+				alert('해킹하지 마세요');
+				return false;
+			}
+			
+			return true;
+		}
+	</script>
 	<!-- 부트스트랩 참조 영역 -->
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"> </script>
