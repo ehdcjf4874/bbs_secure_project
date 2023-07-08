@@ -4,3 +4,5 @@
 톰캣 설치방법 링크: https://wylee-developer.tistory.com/99
 ## Development Environment: Eclipse
 이클립스 설치방법 링크: https://happy-inside.tistory.com/15?category=872273
+
+mysql 비밀번호 초기화 방법: https://ssocoit.tistory.com/256
