@@ -5,4 +5,4 @@
 ## Development Environment: Eclipse
 이클립스 설치방법 링크: https://happy-inside.tistory.com/15?category=872273
 
-mysql 비밀번호 초기화 방법: https://ssocoit.tistory.com/256
+mysql 비밀번호 초기화 방법: https://dev.mysql.com/doc/refman/8.0/en/resetting-permissions.html
